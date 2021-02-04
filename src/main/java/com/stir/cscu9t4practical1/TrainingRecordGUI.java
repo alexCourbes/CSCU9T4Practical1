@@ -1,6 +1,8 @@
 // GUI and main program for the Training Record
 package com.stir.cscu9t4practical1;
 
+import org.w3c.dom.events.Event;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
@@ -9,6 +11,42 @@ import java.lang.Number;
 
 public class TrainingRecordGUI extends JFrame implements ActionListener {
 
+    String choice[] = {"Sprint", "Cycle", "Swim"};
+    private JComboBox<String> dropDown = new JComboBox<String>(choice);
+
+
+    //for the three options:
+
+    //Sprint
+    private JTextField NumberofLaps = new JTextField(4);
+    private JLabel NumberofLapsLabel = new JLabel(" Number of Laps:");
+
+
+    private JTextField recovery = new JTextField(4);
+    private JLabel recoveryLabel = new JLabel(" Recovery:");
+
+
+    //Cycle
+
+    private JTextField getTerrain = new JTextField(4);
+    private JLabel getTerrainLabel = new JLabel(" Terrain:");
+    private JTextField getTempo = new JTextField(4);
+    private JLabel getTempoLabel = new JLabel(" Tempo:");
+
+
+    //Swim
+    private JTextField Location = new JTextField(4);
+    private JLabel LocationLabel = new JLabel("Location: ");
+
+
+    //Button to find by Name;
+
+    private JButton FindByNameButton = new JButton("Find by name");
+
+    //Delete Button
+    private JButton removeEntry = new JButton("remove entry(n,d,m,y)");
+
+    //Rest of fields and labels
     private JTextField name = new JTextField(30);
     private JTextField day = new JTextField(2);
     private JTextField month = new JTextField(2);
@@ -29,6 +67,7 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
     private JButton lookUpByDate = new JButton("Look Up");
     private JButton FindAllByDate = new JButton("Find all By Date");
 
+
     private TrainingRecord myAthletes = new TrainingRecord();
 
     private JTextArea outputArea = new JTextArea(5, 50);
@@ -37,10 +76,14 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
         TrainingRecordGUI applic = new TrainingRecordGUI();
     } // main
 
-    // set up the GUI 
+
+    // set up the GUI
     public TrainingRecordGUI() {
         super("Training Record");
         setLayout(new FlowLayout());
+
+
+        add(dropDown);
         add(labn);
         add(name);
         name.setEditable(true);
@@ -65,25 +108,154 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
         add(labdist);
         add(dist);
         dist.setEditable(true);
+
+
+        //DropDown: functionality
+        add(NumberofLapsLabel);
+        add(NumberofLaps);
+        add(recoveryLabel);
+        add(recovery);
+
+        add(getTerrainLabel);
+        add(getTerrain);
+        add(getTempoLabel);
+        add(getTempo);
+
+        add(LocationLabel);
+        add(Location);
+
+
+        getTerrainLabel.setVisible(false);
+        getTerrain.setVisible(false);
+        getTempoLabel.setVisible(false);
+        getTempo.setVisible(false);
+        Location.setVisible(false);
+        LocationLabel.setVisible(false);
+
+        NumberofLapsLabel.setVisible(true);
+        NumberofLaps.setVisible(true);
+        recoveryLabel.setVisible(true);
+        recovery.setVisible(true);
+
+        dropDown.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String Option = (String) dropDown.getSelectedItem();
+
+                switch (Option) {
+
+                    case "Sprint":
+
+
+
+                        getTerrainLabel.setVisible(false);
+                        getTerrain.setVisible(false);
+                        getTempoLabel.setVisible(false);
+                        getTempo.setVisible(false);
+                        Location.setVisible(false);
+                        LocationLabel.setVisible(false);
+
+                        NumberofLapsLabel.setVisible(true);
+                        NumberofLaps.setVisible(true);
+                        recoveryLabel.setVisible(true);
+                        recovery.setVisible(true);
+                        revalidate();
+                        break;
+
+
+                    case "Cycle":
+
+
+                        NumberofLaps.setVisible(false);
+                        NumberofLapsLabel.setVisible(false);
+                        recovery.setVisible(false);
+                        recoveryLabel.setVisible(false);
+                        LocationLabel.setVisible(false);
+                        Location.setVisible(false);
+
+
+                        getTerrainLabel.setVisible(true);
+                        getTerrain.setVisible(true);
+                        getTempoLabel.setVisible(true);
+                        getTempo.setVisible(true);
+                        revalidate();
+                        break;
+
+                    case "Swim":
+
+
+                        NumberofLapsLabel.setVisible(false);
+                        NumberofLaps.setVisible(false);
+                        recoveryLabel.setVisible(false);
+                        recovery.setVisible(false);
+                        getTerrain.setVisible(false);
+                        getTerrainLabel.setVisible(false);
+                        getTempoLabel.setVisible(false);
+                        getTempo.setVisible(false);
+
+
+
+                        Location.setVisible(true);
+                        LocationLabel.setVisible(true);
+                        revalidate();
+                        break;
+
+
+                }
+
+            }
+        });
+
+        add(outputArea);
+        outputArea.setEditable(false);
         add(addR);
         addR.addActionListener(this);
         add(lookUpByDate);
         lookUpByDate.addActionListener(this);
         add(FindAllByDate);
         FindAllByDate.addActionListener(this);
-        add(outputArea);
-        outputArea.setEditable(false);
-        setSize(720, 200);
+        add(FindByNameButton);
+        FindByNameButton.addActionListener(this);
+        add(removeEntry);
+        removeEntry.addActionListener(this);
+
+
+
+        setSize(1330, 300);
         setVisible(true);
+        setResizable(false);
         blankDisplay();
 
         // To save typing in new entries while testing, uncomment
         // the following lines (or add your own test cases)
 
-    } // constructor
+    }
+    public String removeEntry(){
+        String n = name.getText();
+        int d = Integer.parseInt(day.getText());
+        int m = Integer.parseInt(month.getText());
+        int y = Integer.parseInt(year.getText());
 
-    // listen for and respond to GUI events 
+        outputArea.setText("removing Entry...");
+        String message= myAthletes.removeEntry(n,d,m,y);
+        return message;
+    }
+
+
+    public String FindAllByName() {
+        String n = name.getText();
+        outputArea.setText("looking up record ...");
+
+        String message = myAthletes.FindAllByName(n);
+
+        return message;
+    }
+
+
+    // listen for and respond to GUI events
     public void actionPerformed(ActionEvent event) {
+
+
         String message = "";
         if (event.getSource() == addR) {
             message = addEntry("generic");
@@ -94,6 +266,14 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
         if (event.getSource() == FindAllByDate) {
             message = findAllByDate();
         }
+
+        if(event.getSource()==FindByNameButton){
+            message = FindAllByName();
+        }
+        if (event.getSource()==removeEntry){
+            message= removeEntry();
+        }
+
 
         outputArea.setText(message);
         blankDisplay();
@@ -117,29 +297,50 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
             y = Integer.parseInt(year.getText());
 
         } catch (Exception NumberFormatException) {
-            return message = "input a valid date bitch";
+            return message = "input a valid date ";
         }
 
 
         float km;
-        int h,mm,s;
+        int h, mm, s;
 
         try {
-             km = java.lang.Float.parseFloat(dist.getText());
-             h = Integer.parseInt(hours.getText());
-             mm = Integer.parseInt(mins.getText());
-             s = Integer.parseInt(secs.getText());
+            km = java.lang.Float.parseFloat(dist.getText());
+            h = Integer.parseInt(hours.getText());
+            mm = Integer.parseInt(mins.getText());
+            s = Integer.parseInt(secs.getText());
 
-        }catch(Exception NumberFormatException ){
-            return message="The distance of time inputs are wrong!";
+        } catch (Exception NumberFormatException) {
+            return message = "The distance of time inputs are wrong!";
         }
 
-        Entry e = new Entry(n, d, m, y, h, mm, s, km);
-        myAthletes.addEntry(e);
+
+        switch (dropDown.getSelectedItem().toString()) {
+            case "Sprint":
+                int recover = Integer.parseInt(recovery.getText());
+                int laps = Integer.parseInt(NumberofLaps.getText());
+                Entry e = new SprintEntry(n, d, m, y, h, mm, s, km, laps, recover);
+                myAthletes.addEntry(e);
+                return message;
+
+            case "Swim":
+                String locat = Location.getText();
+                Entry Se = new SwimEntry(n, d, m, y, h, mm, s, km, locat);
+                myAthletes.addEntry(Se);
+                return message;
+            case "Cycle":
+                String tempo = getTempo.getText();
+                String terrain = getTerrain.getText();
+                Entry Ce = new CycleEntry(n, d, m, y, h, mm, s, km, terrain, tempo);
+                myAthletes.addEntry(Ce);
+                return message;
+        }
 
 
         return message;
     }
+
+
 
 
     public String lookupEntry() {
@@ -152,6 +353,7 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
 
         return message;
     }
+
 
     public String findAllByDate() {
         int m = Integer.parseInt(month.getText());
@@ -173,6 +375,11 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
         mins.setText("");
         secs.setText("");
         dist.setText("");
+        NumberofLaps.setText("");
+        recovery.setText("");
+        Location.setText("");
+        getTempo.setText("");
+        getTerrain.setText("");
 
     }// blankDisplay
 
